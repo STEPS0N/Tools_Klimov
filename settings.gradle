@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Tools_Klimov"
 include ':app'
+include ':network'

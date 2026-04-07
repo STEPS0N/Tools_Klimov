@@ -12,7 +12,10 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 import com.example.network.datas.users.UserCreate;
+import com.example.network.datas.users.UserGet;
 import com.example.network.datas.users.UserLogin;
+import com.example.network.datas.users.UserLogout;
+import com.example.network.datas.users.UserSend;
 import com.example.network.datas.users.UserUpdate;
 import com.example.network.domains.callbacks.MyResponseCallback;
 import com.example.network.domains.common.Settings;
@@ -110,6 +113,90 @@ public class ExampleInstrumentedTest {
                     @Override
                     public void onError(String error) {
                         Log.e("USER UPDATE", error);
+                        Latch.countDown();
+                    }
+                }
+        ).execute();
+        Boolean Completed = Latch.await(60, TimeUnit.SECONDS);
+
+        assertTrue(Success[0]);
+    }
+
+    @Test
+    public void UserGet() throws InterruptedException {
+        final Boolean[] Success = {false};
+
+        CountDownLatch Latch = new CountDownLatch(1);
+
+        new UserGet(
+                Settings.DEMO_TOKEN,
+                new MyResponseCallback() {
+                    @Override
+                    public void onCompile(String result) {
+                        Log.d("USER GET", result);
+                        Success[0] = true;
+                        Latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("USER GET", error);
+                        Latch.countDown();
+                    }
+                }
+        ).execute();
+        Boolean Completed = Latch.await(60, TimeUnit.SECONDS);
+
+        assertTrue(Success[0]);
+    }
+
+    @Test
+    public void UserLogout() throws InterruptedException {
+        final Boolean[] Success = {false};
+
+        CountDownLatch Latch = new CountDownLatch(1);
+
+        new UserLogout(
+                Settings.DEMO_TOKEN,
+                new MyResponseCallback() {
+                    @Override
+                    public void onCompile(String result) {
+                        Log.d("USER LOGOUT", result);
+                        Success[0] = true;
+                        Latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("USER LOGOUT", error);
+                        Latch.countDown();
+                    }
+                }
+        ).execute();
+        Boolean Completed = Latch.await(60, TimeUnit.SECONDS);
+
+        assertTrue(Success[0]);
+    }
+
+    @Test
+    public void UserSend() throws InterruptedException {
+        final Boolean[] Success = {false};
+
+        CountDownLatch Latch = new CountDownLatch(1);
+
+        new UserSend(
+                "stepan@mail.ru",
+                new MyResponseCallback() {
+                    @Override
+                    public void onCompile(String result) {
+                        Log.d("USER SEND", result);
+                        Success[0] = true;
+                        Latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("USER SEND", error);
                         Latch.countDown();
                     }
                 }

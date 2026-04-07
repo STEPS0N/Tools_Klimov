@@ -11,8 +11,11 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.example.network.datas.users.UserCreate;
 import com.example.network.datas.users.UserLogin;
+import com.example.network.datas.users.UserUpdate;
 import com.example.network.domains.callbacks.MyResponseCallback;
+import com.example.network.domains.common.Settings;
 import com.example.network.domains.models.User;
 
 import java.util.concurrent.CountDownLatch;
@@ -46,6 +49,67 @@ public class ExampleInstrumentedTest {
                     @Override
                     public void onError(String error) {
                         Log.e("USER LOGIN", error);
+                        Latch.countDown();
+                    }
+                }
+        ).execute();
+        Boolean Completed = Latch.await(60, TimeUnit.SECONDS);
+
+        assertTrue(Success[0]);
+    }
+
+    @Test
+    public void UserCreate() throws InterruptedException {
+        final Boolean[] Success = {false};
+
+        CountDownLatch Latch = new CountDownLatch(1);
+
+        User User = new User("klimov@mail.ru", "228", "Степан", "Андреевич", "Климов", 0);
+
+        new UserCreate(
+                User,
+                new MyResponseCallback() {
+                    @Override
+                    public void onCompile(String result) {
+                        Log.d("USER CREATE", result);
+                        Success[0] = true;
+                        Latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("USER CREATE", error);
+                        Latch.countDown();
+                    }
+                }
+        ).execute();
+        Boolean Completed = Latch.await(60, TimeUnit.SECONDS);
+
+        assertTrue(Success[0]);
+    }
+
+    @Test
+    public void UserUpdate() throws InterruptedException {
+        final Boolean[] Success = {false};
+
+        CountDownLatch Latch = new CountDownLatch(1);
+
+        User User = new User("stepan@mail.ru", "2282", "Степан", "Андреевич", "Климов", 0);
+
+        new UserUpdate(
+                User,
+                Settings.DEMO_TOKEN,
+                new MyResponseCallback() {
+                    @Override
+                    public void onCompile(String result) {
+                        Log.d("USER UPDATE", result);
+                        Success[0] = true;
+                        Latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("USER UPDATE", error);
                         Latch.countDown();
                     }
                 }

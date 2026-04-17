@@ -1,36 +1,32 @@
-package com.example.network.datas.product;
+package com.example.network.datas.order;
 
 import com.example.network.domains.apis.MyAsyncTask;
 import com.example.network.domains.callbacks.MyResponseCallback;
 import com.example.network.domains.common.Settings;
-import com.example.network.domains.models.Product;
 import com.google.gson.GsonBuilder;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
-public class ProductDelete extends MyAsyncTask {
+public class OrderGet extends MyAsyncTask {
+    Integer orderId;
     String token;
-    Integer id;
 
-    public ProductDelete(String token, Integer id, MyResponseCallback callback) {
+    public OrderGet(Integer orderId, String token, MyResponseCallback callback) {
         super(callback);
+        this.orderId = orderId;
         this.token = token;
-        this.id = id;
     }
 
     @Override
     protected String doInBackground(Void... voids) {
-        String rawData = new GsonBuilder().create().toJson(id);
-
         try {
-            Connection.Response response = Jsoup.connect(Settings.URL + "/api/product/delete/")
+            Connection.Response response = Jsoup.connect(Settings.URL + "/api/order/get/" + orderId)
                     .ignoreContentType(true)
                     .ignoreHttpErrors(true)
-                    .method(Connection.Method.DELETE)
+                    .method(Connection.Method.GET)
                     .header("Content-type", "application/json")
                     .header("token", token)
-                    .requestBody(rawData)
                     .execute();
             return response.statusCode() == 200 ?
                     response.body() :
